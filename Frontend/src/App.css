@@ -1,0 +1,21 @@
+.card:hover{
+    scale: 1.02;
+    box-shadow: 3px 1px 5px 5px rgba(99, 99, 122, 0.2);
+}
+.drawer{
+    box-shadow: 3px 1px 5px 5px rgba(99, 99, 122, 0.2);
+    transition: all ease-in-out 0.5s;
+}
+.card{
+    transition: all ease-in 0.2s;
+}
+h1{
+    font-family: "Poetsen One", sans-serif;
+    font-weight: 300;
+    font-style: normal;
+    letter-spacing: 1.1px;
+    word-spacing: 2px;
+}
+.signup{
+    background: linear-gradient(to right bottom,orange ,red  );
+}
