@@ -1,9 +1,7 @@
-import { useState } from "react";
 import "../App.css";
-import LandingPage from "../Components/LandingPage";
 import Navbar from "../Components/Navbar";
-import Course from "../Components/Course";
 import Footer from "../Components/Footer";
+import toast, { Toaster } from "react-hot-toast";
 import { Outlet } from "react-router-dom";
 function App() {
   return (
@@ -11,6 +9,7 @@ function App() {
       <Navbar></Navbar>
       <Outlet></Outlet>
       <Footer></Footer>
+      <Toaster />
     </>
   );
 }

@@ -1,5 +1,6 @@
 import React from "react";
 import book from "../assets/book.png";
+import { Link } from "react-router-dom";
 
 const Card = ({ elem }) => {
   return (
@@ -10,19 +11,17 @@ const Card = ({ elem }) => {
         </figure>
         <div className="card-body">
           <div className="flex gap-5">
-            <h2 className="card-title">{elem.title.substring(0, 26)}</h2>
-            {elem.categories.length === 0 ? (
-              ""
-            ) : (
-              <div className="badge badge-accent mt-1">
-                {elem.categories.substring(0, 6)}
-              </div>
+            <h2 className="card-title">{elem.title}</h2>
+            {elem.categories?.toLowerCase().trim() === "free" && (
+              <div className="badge badge-accent mt-1">{elem.categories}</div>
             )}
           </div>
-          <p>{elem.description.substring(0, 150)}</p>
+          <p>{elem.description}</p>
           <div className="card-actions justify-between mt-3">
             <div className="badge badge-ghost mt-1">$. {elem.price}</div>
-            <button className="btn btn-primary btn-sm">Buy Now</button>
+            <Link to={`/store/book/${elem._id}`}>
+              <button className="btn btn-primary btn-sm">Buy Now</button>
+            </Link>
           </div>
         </div>
       </div>

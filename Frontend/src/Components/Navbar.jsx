@@ -1,10 +1,15 @@
 import React, { useEffect, useRef, useState } from "react";
 import { NavLink } from "react-router-dom";
 import Login from "./Login";
+import Logout from "./Logout";
+import { useDispatch, useSelector } from "react-redux";
+
 const Navbar = () => {
   const [theme, setTheme] = useState("cupcake");
-  // const element = document.documentElement;
   const [stickyscroll, setStickyscroll] = useState(false);
+
+  const loggedUser = useSelector((store) => store.signup.username);
+
   useEffect(() => {
     // let themeElement = document.body.getAttribute("data-theme");
     if (theme === "dark") {
@@ -15,6 +20,7 @@ const Navbar = () => {
       localStorage.setItem("theme", "cupcake");
     }
   }, [theme]);
+
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > 0) {
@@ -28,11 +34,12 @@ const Navbar = () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, [stickyscroll]);
+
   return (
     <>
       <div
-        className={`z-50 bg-[#FAF7F5] min-h-11 ${
-          stickyscroll ? "fixed drawer" : ""
+        className={`z-50 bg-[#FAF7F5] mb-9 min-h-11 ${
+          stickyscroll ? "drawer sticky top-0" : ""
         }`}
       >
         <input id="my-drawer-3" type="checkbox" className="drawer-toggle" />
@@ -60,12 +67,15 @@ const Navbar = () => {
               </label>
             </div>
             <div className="flex-1 px-2 mx-2 w-full justify-between">
-              <img
-                src="https://cdn.vectorstock.com/i/500p/55/19/book-shop-icon-library-store-or-bookstore-symbol-vector-47565519.jpg"
-                alt=""
-                height={50}
-                width={50}
-              />
+              <div className="logo flex justify-center gap-3 items-center">
+                <img
+                  src="https://cdn.vectorstock.com/i/500p/55/19/book-shop-icon-library-store-or-bookstore-symbol-vector-47565519.jpg"
+                  alt=""
+                  height={50}
+                  width={50}
+                />
+                <b className="font-['Neue-Montreal'] text-xl">Book Store</b>
+              </div>
 
               <div className="hidden lg:block">
                 <ul className="menu menu-horizontal flex justify-between">
@@ -88,19 +98,32 @@ const Navbar = () => {
                       </NavLink>
                     </li>
                     <li>
-                      <NavLink className="font-semibold text-zinc-800 bg-zinc-800 rounded-full">
-                        About
+                      <NavLink
+                        className="font-semibold text-zinc-800 rounded-full"
+                        to="/contact"
+                      >
+                        Contact
                       </NavLink>
                     </li>
                     <li>
-                      <NavLink className="font-semibold text-zinc-800 rounded-full">
-                        Contact
+                      <NavLink
+                        className="font-semibold text-zinc-800 rounded-full"
+                        to="/about"
+                      >
+                        About
                       </NavLink>
                     </li>
                   </div>
                 </ul>
               </div>
               <div className="flex justify-center gap-3">
+                {loggedUser === undefined ? (
+                  ""
+                ) : (
+                  <h2 className="text-xl lg:block hidden">
+                    <span className="badge badge-lg">{loggedUser}</span>
+                  </h2>
+                )}
                 <label className="input input-bordered input-sm w-full max-w-xs flex items-center gap-2 rounded-full">
                   <input type="text" className="grow" placeholder="Search" />
                   <svg
@@ -116,7 +139,6 @@ const Navbar = () => {
                     />
                   </svg>
                 </label>
-
                 <label className="swap swap-rotate">
                   <input
                     type="checkbox"
@@ -140,34 +162,46 @@ const Navbar = () => {
                     <path d="M5.64,17l-.71.71a1,1,0,0,0,0,1.41,1,1,0,0,0,1.41,0l.71-.71A1,1,0,0,0,5.64,17ZM5,12a1,1,0,0,0-1-1H3a1,1,0,0,0,0,2H4A1,1,0,0,0,5,12Zm7-7a1,1,0,0,0,1-1V3a1,1,0,0,0-2,0V4A1,1,0,0,0,12,5ZM5.64,7.05a1,1,0,0,0,.7.29,1,1,0,0,0,.71-.29,1,1,0,0,0,0-1.41l-.71-.71A1,1,0,0,0,4.93,6.34Zm12,.29a1,1,0,0,0,.7-.29l.71-.71a1,1,0,1,0-1.41-1.41L17,5.64a1,1,0,0,0,0,1.41A1,1,0,0,0,17.66,7.34ZM21,11H20a1,1,0,0,0,0,2h1a1,1,0,0,0,0-2Zm-9,8a1,1,0,0,0-1,1v1a1,1,0,0,0,2,0V20A1,1,0,0,0,12,19ZM18.36,17A1,1,0,0,0,17,18.36l.71.71a1,1,0,0,0,1.41,0,1,1,0,0,0,0-1.41ZM12,6.5A5.5,5.5,0,1,0,17.5,12,5.51,5.51,0,0,0,12,6.5Zm0,9A3.5,3.5,0,1,1,15.5,12,3.5,3.5,0,0,1,12,15.5Z" />
                   </svg>
                 </label>
-                <Login></Login>
+                {loggedUser === undefined ? <Login /> : <Logout />}
               </div>
             </div>
           </div>
         </div>
-        <div className="drawer-side">
+        <div className="drawer-side z-50">
           <label
             htmlFor="my-drawer-3"
             aria-label="close sidebar"
             className="drawer-overlay"
           ></label>
           <ul className="menu p-4 w-80 min-h-full bg-base-200">
+            {loggedUser === undefined ? (
+              ""
+            ) : (
+              <div className="avatar placeholder my-3">
+                <div className="bg-neutral text-neutral-content rounded-full w-24">
+                  <span className="text-3xl">
+                    {String(loggedUser).substring(0, 1)}
+                  </span>
+                </div>
+              </div>
+            )}
+            <hr />
             <li>
-              <NavLink>Home</NavLink>
+              <NavLink to="/">Home</NavLink>
             </li>
             <li>
-              <NavLink>Store</NavLink>
+              <NavLink to="/store">Store</NavLink>
             </li>
             <li>
-              <NavLink>About</NavLink>
+              <NavLink to="/about">About</NavLink>
             </li>
             <li>
-              <NavLink>Contact</NavLink>
+              <NavLink to="/contact">Contact</NavLink>
             </li>
           </ul>
         </div>
       </div>
-      <div className="min-h-[20vh]"></div>
+      {/* <div className="min-h-[10vh]"></div> */}
     </>
   );
 };

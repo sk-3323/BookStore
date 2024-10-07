@@ -1,13 +1,27 @@
-import React from "react";
-import { useGSAP } from "@gsap/react";
-import gsap from "gsap";
-import booksList from "../../public/books.json";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import Card from "./Card";
+import LoadingSpinner from "./LoadingSpinner";
+import toast from "react-hot-toast";
 const Course = () => {
-  let booklist = booksList.response.books;
-  const freeBook = booklist.filter((book) => {
-    return book.categories === "free";
+  const [book, setBook] = useState([]);
+  const [fetching, setFetching] = useState(false);
+  useEffect(() => {
+    setFetching(true);
+    setTimeout(() => {
+      axios
+        .get("http://localhost:3000/book")
+        .then((res) => {
+          setBook(res.data);
+          setFetching(false);
+        })
+        .catch((err) => toast.error(err.response.data.message));
+    }, 3000);
+  }, []);
+  const freeBook = book.filter((books) => {
+    return books.categories === "free" && books.price === 0;
   });
+
   return (
     <>
       <div className="w-full min-h-screen flex flex-col p-5 gap-5 items-center">
@@ -18,9 +32,11 @@ const Course = () => {
         </span>
         <div className="w-full bg-slate-500 h-0.5 opacity-5"></div>
         <div className="courses flex justify-center items-center gap-10 w-full flex-wrap mt-11">
-          {freeBook.map((elem) => (
-            <Card elem={elem} key={elem.id} />
-          ))}
+          {fetching ? (
+            <LoadingSpinner />
+          ) : (
+            freeBook.map((elem) => <Card elem={elem} key={elem.id} />)
+          )}
         </div>
       </div>
     </>

@@ -1,9 +1,26 @@
-import React from "react";
-import books from "../../public/books.json";
+import React, { useEffect, useState } from "react";
 import Card from "./Card";
-import { Link } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
+import axios from "axios";
+import LoadingSpinner from "./LoadingSpinner";
+import { useSelector } from "react-redux";
+import toast from "react-hot-toast";
+
 const Store = () => {
-  const book = books.response.books;
+  const [book, setBook] = useState([]);
+  const [fetching, setFetching] = useState(false);
+  const navigate = useNavigate();
+  useEffect(() => {
+    setFetching(true);
+    axios
+      .get(`http://localhost:3000/book`)
+      .then((res) => {
+        setBook(res.data);
+        setFetching(false);
+      })
+      .catch((err) => console.log(err));
+  }, []);
+
   return (
     <>
       <div className="w-full min-h-screen">
@@ -23,9 +40,11 @@ const Store = () => {
           </Link>
         </div>
         <div className="w-full min-h-screen flex justify-center items-center flex-wrap gap-5 mt-9">
-          {book.map((elem) => (
-            <Card elem={elem} key={elem.id}></Card>
-          ))}
+          {fetching ? (
+            <LoadingSpinner />
+          ) : (
+            book.map((elem) => <Card elem={elem} key={elem.id}></Card>)
+          )}
         </div>
       </div>
     </>

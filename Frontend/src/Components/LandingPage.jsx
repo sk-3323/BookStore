@@ -13,6 +13,14 @@ const LandingPage = () => {
       yoyo: true,
       ease: "sine.inOut",
     });
+    const tl = gsap.timeline();
+    gsap.from(".content h1,.content span,.content label,.content button,.img", {
+      x: -100,
+      duration: 1,
+      delay: 0.2,
+      opacity: 0,
+      stagger: 0.2,
+    });
   });
   return (
     <>
@@ -45,7 +53,7 @@ const LandingPage = () => {
             Get Started
           </button>
         </div>
-        <div className="lg:w-1/3 sm:w-full flex justify-center items-center">
+        <div className="lg:w-1/3 sm:w-full flex justify-center items-center img">
           <img
             src={book}
             alt="unavailable"

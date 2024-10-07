@@ -1,15 +1,42 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, redirect, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
+import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { userAction } from "../Store/signupSlice";
 
 const Signup = () => {
+  const [err, setErr] = useState();
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const onSubmit = async (data) => {
+    const userSIgnup = {
+      username: data.username,
+      email: data.email,
+      password: data.password,
+    };
 
-  const onSubmit = (data) => console.log(data);
+    await axios
+      .post(`http://localhost:3000/user/signup`, userSIgnup)
+      .then((res) => {
+        if (res.data) {
+          toast.success("Sign up successfully");
+          dispatch(userAction.initialUser(userSIgnup));
+          navigate("/");
+          localStorage.setItem("signupUser", JSON.stringify(res.data.user));
+          localStorage.removeItem("LoggedUser");
+        }
+      })
+      .catch((err) => {
+        setErr(err.response.data.message);
+      });
+  };
 
   return (
     <>
@@ -141,9 +168,19 @@ const Signup = () => {
                   </span>
                 )}
               </label>
-              <button className="signup border-none px-9 py-2 mt-5 rounded-lg text-white font-bold shadow-lg">
+              {err && <p className="text-red-500">{err}</p>}
+              <button
+                className="signup border-none px-9 py-2 mt-5 rounded-lg text-white font-bold shadow-lg"
+                type="submit"
+              >
                 Sign up
               </button>
+              <p className="text-right">
+                Do you have an account?{" "}
+                <a href="/" className="font-bold text-blue-400 underline">
+                  Login
+                </a>
+              </p>
             </form>
           </div>
         </div>

@@ -1,7 +1,10 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-
+import axios from "axios";
+import toast from "react-hot-toast";
+import { useDispatch } from "react-redux";
+import { userAction } from "../Store/signupSlice";
 const Login = () => {
   const {
     register,
@@ -9,15 +12,39 @@ const Login = () => {
     formState: { errors },
   } = useForm();
 
-  const onSubmit = (data) => console.log(data);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const onSubmit = async (data) => {
+    const user = {
+      email: data.email,
+      password: data.password,
+    };
+
+    await axios
+      .post(`http://localhost:3000/user/login`, user)
+      .then((res) => {
+        if (res.data.user.username === "admin") {
+          navigate("/admin");
+        } else {
+          toast.success("Login successfully!");
+          localStorage.setItem("LoggedUser", JSON.stringify(res.data.user));
+          localStorage.removeItem("signupUser");
+          dispatch(userAction.initialUser(res.data.user));
+        }
+      })
+      .catch((err) => {
+        toast.error(err.response.data.message);
+      });
+  };
   return (
     <>
-      <button
+      <Link
         className="btn btn-outline btn-secondary btn-sm px-5 rounded-full"
         onClick={() => document.getElementById("loginModel").showModal()}
       >
         Login
-      </button>
+      </Link>
       <dialog id="loginModel" className="modal">
         <div className="modal-box">
           <form
